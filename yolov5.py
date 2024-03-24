@@ -2,7 +2,7 @@ import torch
 import cv2
 import time
 
-
+# ObjectDetection sınıfının başlatma (constructor) fonksiyonudur.
 class ObjectDetection:
     def __init__(self, input_file, out_file="Labeled_Video.avi"):
         self.input_file = input_file
@@ -26,15 +26,18 @@ class ObjectDetection:
         self.out_file = out_file
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+    # videoyu açar ve döndürür.
     def get_video_from_file(self):
         cap = cv2.VideoCapture(self.input_file)
         assert cap is not None
         return cap
 
+    # modeli yükler ve döndürür.
     def load_model(self):
         model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
         return model
 
+    # frame'i modelden geçirir ve tespit edilen nesnelerin isimlerini ve koordinatlarını döndürür.
     def score_frame(self, frame):
         self.model.to(self.device)
         frame = [frame]
@@ -42,9 +45,10 @@ class ObjectDetection:
         labels, cord = results.xyxyn[0][:, -1].numpy(), results.xyxyn[0][:, :-1].numpy()
         return labels, cord
 
+    # tespit edilen nesnelerin isimlerini döndürür.
     def class_to_label(self, x):
         return self.classes[int(x)]
-
+    # tespit edilen nesnelerin koordinatlarını döndürür ve kare içine çizer.
     def plot_boxes(self, results, frame):
         labels, cord = results
         n = len(labels)
@@ -60,6 +64,7 @@ class ObjectDetection:
 
         return frame
 
+    # videoyu açar ve tespit edilen nesneleri çizer.
     def __call__(self):
         player = self.get_video_from_file()
         assert player.isOpened()
