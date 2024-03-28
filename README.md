@@ -24,11 +24,11 @@ pip install -r requirements.txt
 ## Usage
 For Mac/Linux
 ```bash
-python3 webSocketApp.py
+python3 yolov5.py
 ```
 For Windows
 ```bash
-python webSocketApp.py
+python yolov5.py
 ```
 
 
